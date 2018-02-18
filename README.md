@@ -22,20 +22,20 @@ In this project we will experiment with training machine learning models for ide
 # 2 Model & Training Procedure Description
 For each classification algorithm, the structure of the model is described - such as the number of neurons in each layer, number of epochs used for training, and batch size used for training
 
-# 2.1 Artificial Neural Network (ANN)
+## 2.1 Artificial Neural Network (ANN)
 
-# 2.2 Decision Tress (DT)
+## 2.2 Decision Tress (DT)
 
-# 2.3 k-Nearest Neighbors (kNN)
+## 2.3 k-Nearest Neighbors (kNN)
 
 # 3 Graphs
 Here graphs are included to show how the training accuracy and validation accuracy change over time. It shows graph epochs versus training set and validation set accuracy.
 
-# 3.1 Artificial Neural Network (ANN)
+## 3.1 Artificial Neural Network (ANN)
 
-# 3.2 Decision Tress (DT)
+## 3.2 Decision Tress (DT)
 
-# 3.3 k-Nearest Neighbors (kNN)
+## 3.3 k-Nearest Neighbors (kNN)
 
 # 4 Model Performance and Confusion Matrix
 For each algorithm, a confusion matrix is included showing results of the model reported on the test set.
