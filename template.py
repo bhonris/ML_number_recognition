@@ -2,7 +2,14 @@ from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras.utils import to_categorical
 from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from confusion_matrix_graph import plot_confusion_matrix
 import numpy as np
+from sklearn import svm, datasets
+
+
+
 
 # Preprocessing the Data
 x = np.reshape(np.load('images.npy'), (6500, 784))
@@ -24,6 +31,8 @@ for train_index, validate_index in testSetSampler.split(x_, y_):
 model = Sequential() # declare model
 model.add(Dense(10, input_shape=(28*28, ), kernel_initializer='he_normal')) # first layer
 model.add(Activation('relu'))
+
+
 #
 #
 #
@@ -49,4 +58,10 @@ history = model.fit(x_train, y_train,
 # Report Results
 
 print(history.history)
-model.predict()
+y_predict = model.predict(x_test)
+y_predict = np.round(y_predict)
+
+cnf_matrix = confusion_matrix(y_test.argmax(axis=1), y_predict.argmax(axis=1))
+plot_confusion_matrix(cnf_matrix, classes=['0','1','2','3','4','5','6','7','8','9'],
+                      title='Confusion matrix, without normalization')
+#print(accuracy)
