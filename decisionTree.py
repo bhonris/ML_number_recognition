@@ -65,7 +65,71 @@ def detectCircles(x):
     return (top_y, top_x), (bot_y, bot_x)
     #Split the image
     #Find centroid
+def checkForEdges(x, i, j, dx, dy, threshold):
+    while(x[i][j] < threshold):
+        i += dx
+        j += dy
+        if(not ((0 < i < 27) and (0 < j < 27))):
+            return False #edge detected, not in circle
+    return True #white detected, may be in circle
+def checkForCircles(x, i, j, threshold):
+    up = checkForEdges(x,i,j,1,0, threshold);
+    if(not up): return False
+    down = checkForEdges(x,i,j,-1,0, threshold);
+    if(not down): return False
+    diag1 = checkForEdges(x,i,j,1,1, threshold);
+    if(not diag1): return False
+    diag2 = checkForEdges(x,i,j,-1,-1, threshold);
+    if(not diag2): return False
+    diag3 = checkForEdges(x,i,j,1,-1, threshold);
+    if(not diag3): return False
+    diag4 = checkForEdges(x,i,j,-1,1, threshold);
+    if(not diag4): return False
+    return True
+
     
+def detectCircles2(x, threshold = 190):
+    
+    for e in range(len(x)):
+        #find if there is a change from black to white to black
+        curCount = 0
+        #black to white
+        while((curCount < 27) and x[e][curCount] < threshold):
+            curCount += 1
+        #print("First: " + str(firstChange))
+        #white to black
+        while((curCount < 27) and x[e][curCount] >= threshold):
+            curCount += 1
+        firstChange = curCount
+        curCount += 1
+        #black to white
+        while((curCount < 27) and x[e][curCount] < threshold):
+            curCount += 1
+        secondChange = curCount
+        #print("Second: " + str(firstChange))
+        if(secondChange >= 27):
+            continue
+        else:
+            middle = int((firstChange + secondChange)/2)
+            if(checkForCircles(x, e, middle, threshold)):
+                return 1
+    return 0
+
+def trainDetectCircles(x, y, row = (0,27), column = (0,27)):
+    length = len(x)
+    numberDensity = [[],[],[],[],[],[],[],[],[],[]]
+    circleSum = 0
+    for i in range(length):
+        curArray = x[i][row[0]:row[1]+1, column[0]:column[1]+1]
+        ans = detectCircles2(curArray)
+        numberDensity[y[i]] += [detectCircles2(curArray)]
+    #return [x / length for x in numberDensity]
+    meanDensity = [np.array(x).mean() for x in numberDensity]
+    devDensity = [np.array(x).std() for x in numberDensity]
+    accuracy = (len(numberDensity[0]) + len(numberDensity[6]) 
+              + len(numberDensity[8]) + len(numberDensity[0]))/length
+    return meanDensity, devDensity, accuracy
+        
 def straightLines(x):
     """ Get the longest straight line
         x -> an array of 28x28 matrix representing an image
@@ -99,6 +163,13 @@ def trainStraightLines(x, y, row = (0,27), column = (0,27)):
     devDensity = [np.array(x).std() for x in numberDensity]
     return meanDensity, devDensity
 
+def engineeredTree(xTrain,yTrain,xVal, yVal):
+    """
+    1: low density overall (19), small density when looking at left and right, 
+        no circles (0.01), long (14),
+    2: 
+    """
+    return 0
 
 # Model Template
 def baseLineModel(xTrain,yTrain,xVal, yVal,  score = 'accuracy', max_depth = None):
