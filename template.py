@@ -5,15 +5,15 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from confusion_matrix_graph import plot_confusion_matrix
+from sklearn.neighbors import KNeighborsClassifier
 import numpy as np
 from sklearn import svm, datasets
-
-
 
 
 # Preprocessing the Data
 x = np.reshape(np.load('images.npy'), (6500, 784))
 y = to_categorical(np.load('labels.npy'))
+
 
 # Stratified Sampling
 testSetSampler = StratifiedShuffleSplit(n_splits=10, test_size=0.25, train_size=0.75)
@@ -65,3 +65,34 @@ cnf_matrix = confusion_matrix(y_test.argmax(axis=1), y_predict.argmax(axis=1))
 plot_confusion_matrix(cnf_matrix, classes=['0','1','2','3','4','5','6','7','8','9'],
                       title='Confusion matrix, without normalization')
 #print(accuracy)
+
+# K-Nearest Neighbor Classification
+# Use x_test, y_test for testing
+# x_train, y_train for testing
+# x_val and y_val for validation
+# sum = 0
+# for i in range(0,10):
+neigh = KNeighborsClassifier(n_neighbors=3)
+#print(neigh)
+#Fitting the model
+historyNeigh = neigh.fit(x_train, y_train) # fit (X, y) fits the model using X as training data and y as target value
+# print(historyNeigh)
+# Predict the response
+pred = neigh.predict(x_val)
+pred = np.round(pred)
+# Evaluate Accuracy
+# sum += accuracy_score(y_test, pred)
+# print("%i, Accuracy: %i", (i, accuracy_score(y_test, pred)))
+print("Accuracy Validation")
+print(accuracy_score(y_val, pred))
+predTest = neigh.predict(x_test)
+predTest = np.round(predTest)
+print("Accuracy Test")
+print(accuracy_score(y_test, predTest))
+
+# confusion Matrix
+cnf_matrix_KN = confusion_matrix(y_test.argmax(axis=1), predTest.argmax(axis=1))
+plot_confusion_matrix(cnf_matrix_KN, classes=['0','1','2','3','4','5','6','7','8','9'],
+                      title='Confusion matrix, without normalization')
+
+
