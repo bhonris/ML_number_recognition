@@ -2,9 +2,6 @@ import matplotlib.pyplot as plt
 import itertools
 import numpy as np
 
-
-
-
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
                           title='Confusion matrix',
