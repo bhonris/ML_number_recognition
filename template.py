@@ -5,10 +5,14 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from confusion_matrix_graph import plot_confusion_matrix
+from sklearn.neighbors import KNeighborsClassifier
 import numpy as np
 import matplotlib.pyplot as plt
 from keras import initializers
 from sklearn import svm, datasets
+
+
+# Artificial Neural Networks
 
 # Preprocessing the Data
 x = np.reshape(np.load('images.npy'), (6500, 784))
@@ -36,10 +40,8 @@ model.add(Dense(60, activation='tanh', use_bias=True, kernel_initializer=initial
 model.add(Dense(60, activation='relu', use_bias=True, kernel_initializer=initializers.glorot_uniform(40), bias_initializer='zeros'))
 model.add(Dense(60, activation='selu', kernel_initializer=initializers.lecun_normal()))
 
-
 model.add(Dense(10, kernel_initializer='he_normal')) # last layer
 model.add(Activation('softmax'))
-
 
 # Compile Model
 model.compile(optimizer='sgd',
@@ -51,7 +53,6 @@ history = model.fit(x_train, y_train,
                     validation_data = (x_val, y_val), 
                     epochs=1400,
                     batch_size=512)
-
 
 # Report Results
 print(history.history)
@@ -84,4 +85,33 @@ plot_confusion_matrix(cnf_matrix, classes=['0','1','2','3','4','5','6','7','8','
                       title='Confusion matrix, without normalization')
 
 print(accuracy_score(y_test, y_predict))
+
+
+# K-Nearest Neighbor Classification
+neigh = KNeighborsClassifier(n_neighbors=3)
+
+#Fitting the model
+historyNeigh = neigh.fit(x_train, y_train) # fit (X, y) fits the model using X as training data and y as target value
+
+# Predict the response on validation set
+pred = neigh.predict(x_val)
+pred = np.round(pred)
+
+# Evaluate Accuracy on validation set
+print("Accuracy Validation")
+print(accuracy_score(y_val, pred))
+
+# Predict the response on test set
+predTest = neigh.predict(x_test)
+predTest = np.round(predTest)
+
+# Evaluate Accuracy on test set
+print("Accuracy Test")
+print(accuracy_score(y_test, predTest))
+
+# Confusion matrix and other metrics
+print("Confusion matrix")
+cnf_matrix_KN = confusion_matrix(y_test.argmax(axis=1), predTest.argmax(axis=1))
+plot_confusion_matrix(cnf_matrix_KN, classes=['0','1','2','3','4','5','6','7','8','9'],
+                      title='Confusion matrix, without normalization')
 
