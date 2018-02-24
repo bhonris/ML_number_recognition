@@ -65,7 +65,71 @@ def detectCircles(x):
     return (top_y, top_x), (bot_y, bot_x)
     #Split the image
     #Find centroid
+def checkForEdges(x, i, j, dx, dy, threshold):
+    while(x[i][j] < threshold):
+        i += dx
+        j += dy
+        if(not ((0 < i < 27) and (0 < j < 27))):
+            return False #edge detected, not in circle
+    return True #white detected, may be in circle
+def checkForCircles(x, i, j, threshold):
+    up = checkForEdges(x,i,j,1,0, threshold);
+    if(not up): return False
+    down = checkForEdges(x,i,j,-1,0, threshold);
+    if(not down): return False
+    diag1 = checkForEdges(x,i,j,1,1, threshold);
+    if(not diag1): return False
+    diag2 = checkForEdges(x,i,j,-1,-1, threshold);
+    if(not diag2): return False
+    diag3 = checkForEdges(x,i,j,1,-1, threshold);
+    if(not diag3): return False
+    diag4 = checkForEdges(x,i,j,-1,1, threshold);
+    if(not diag4): return False
+    return True
+
     
+def detectCircles2(x, threshold = 190):
+    
+    for e in range(len(x)):
+        #find if there is a change from black to white to black
+        curCount = 0
+        #black to white
+        while((curCount < 27) and x[e][curCount] < threshold):
+            curCount += 1
+        #print("First: " + str(firstChange))
+        #white to black
+        while((curCount < 27) and x[e][curCount] >= threshold):
+            curCount += 1
+        firstChange = curCount
+        curCount += 1
+        #black to white
+        while((curCount < 27) and x[e][curCount] < threshold):
+            curCount += 1
+        secondChange = curCount
+        #print("Second: " + str(firstChange))
+        if(secondChange >= 27):
+            continue
+        else:
+            middle = int((firstChange + secondChange)/2)
+            if(checkForCircles(x, e, middle, threshold)):
+                return 1
+    return 0
+
+def trainDetectCircles(x, y, row = (0,27), column = (0,27)):
+    length = len(x)
+    numberDensity = [[],[],[],[],[],[],[],[],[],[]]
+    circleSum = 0
+    for i in range(length):
+        curArray = x[i][row[0]:row[1]+1, column[0]:column[1]+1]
+        ans = detectCircles2(curArray)
+        numberDensity[y[i]] += [detectCircles2(curArray)]
+    #return [x / length for x in numberDensity]
+    meanDensity = [np.array(x).mean() for x in numberDensity]
+    devDensity = [np.array(x).std() for x in numberDensity]
+    accuracy = (len(numberDensity[0]) + len(numberDensity[6]) 
+              + len(numberDensity[8]) + len(numberDensity[0]))/length
+    return meanDensity, devDensity, accuracy
+        
 def straightLines(x):
     """ Get the longest straight line
         x -> an array of 28x28 matrix representing an image
@@ -77,6 +141,22 @@ def straightLines(x):
         while((curCount < 27) and x[curCount][e] < 50):
             curCount += 1
         while((x[curCount][e] > 50) and (curCount < 27)):
+            curCount += 1
+            curWhite += 1
+        if(curWhite > curMax): curMax = curWhite
+    return curMax
+
+def straightLinesHorizontal(x):
+    """ Get the longest straight line
+        x -> an array of 28x28 matrix representing an image
+    """
+    curMax = 0
+    for e in range(12,17):
+        curCount = 0
+        curWhite = 0
+        while((curCount < 27) and x[e][curCount] < 50):
+            curCount += 1
+        while((x[e][curCount] > 50) and (curCount < 27)):
             curCount += 1
             curWhite += 1
         if(curWhite > curMax): curMax = curWhite
@@ -99,16 +179,41 @@ def trainStraightLines(x, y, row = (0,27), column = (0,27)):
     devDensity = [np.array(x).std() for x in numberDensity]
     return meanDensity, devDensity
 
+def trainStraightHorizontalLines(x, y, row = (0,27), column = (0,27)):
+    """ Determines the average density of 1's for each number
+    x -> an array of 28x28 matrix representing an image
+    y -> an array of labels of the number, between 0-9
+    row ->tuple subset of the matrix horizontally
+    column -> tuple subset of the matrix vertically
+    """
+    length = len(x)
+    numberDensity = [[],[],[],[],[],[],[],[],[],[]]
+    for i in range(length):
+        curArray = x[i][row[0]:row[1]+1, column[0]:column[1]+1]
+        numberDensity[y[i]] += [straightLinesHorizontal(curArray)]
+    #return [x / length for x in numberDensity]
+    meanDensity = [np.array(x).mean() for x in numberDensity]
+    devDensity = [np.array(x).std() for x in numberDensity]
+    return meanDensity, devDensity
+
+def engineeredTree(x,y):
+    """
+    0: high overall density(45,10), circles (0.98), short straight lines (6)
+    1: low density overall (19), small density when looking at left and right, 
+        no circles (0.01), long (14),
+    2: 
+    """
+    return 0
 
 # Model Template
 def baseLineModel(xTrain,yTrain,xVal, yVal,  score = 'accuracy', max_depth = None):
     clf = tree.DecisionTreeClassifier(max_depth = max_depth) #max depth
     a = (clf.fit(xTrain,yTrain))
-    b = a.tree_
-    print("Node Count: " + str(b.node_count))
-    with open("cTree.txt", "w") as f:
-        f = tree.export_graphviz(a, out_file=f)
-    scores = modelsel.cross_val_score(clf, xVal, yVal, cv=10, scoring = score)
+    #b = a.tree_
+    #print("Node Count: " + str(b.node_count))
+    #with open("cTree.txt", "w") as f:
+    #    f = tree.export_graphviz(a, out_file=f)
+    scores = modelsel.cross_val_score(clf, xTrain, yTrain, cv=10, scoring = score)
     print(scores)
     print("Cross_Validation Mean Score: " + str(scores.mean()))
 
@@ -117,14 +222,14 @@ def baseLineModel(xTrain,yTrain,xVal, yVal,  score = 'accuracy', max_depth = Non
 # Report Results
 ##############################################################################
 """Uncomment this portion out to test code"""
-#clf = baseLineModel(x_train, y_train, x_val, y_val)
-#y_predict = clf.predict(x_test)
-#y_predict = np.round(y_predict)
-#cnf_matrix = confusion_matrix(y_test.argmax(axis=1), y_predict.argmax(axis=1))
-#plot_confusion_matrix(cnf_matrix, classes=['0','1','2','3','4','5','6','7','8','9'],
-#                      title='Confusion matrix for BaseLine Model')
-#scores = accuracy_score(y_test, y_predict)
-#print("Cross_Validation Mean Score: " + str(scores.mean()))
+clf = baseLineModel(x_train, y_train, x_val, y_val)
+y_predict = clf.predict(x_test)
+y_predict = np.round(y_predict)
+cnf_matrix = confusion_matrix(y_test.argmax(axis=1), y_predict.argmax(axis=1))
+plot_confusion_matrix(cnf_matrix, classes=['0','1','2','3','4','5','6','7','8','9'],
+                      title='Confusion matrix for BaseLine Model')
+scores = accuracy_score(y_test, y_predict)
+print("Accuracy: " + str(scores.mean()))
 ##############################################################################
 
 
