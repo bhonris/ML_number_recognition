@@ -1,8 +1,9 @@
+import recall as recall
 from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras.utils import to_categorical
 from sklearn.model_selection import StratifiedShuffleSplit
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, fbeta_score, average_precision_score, recall_score
 from sklearn.metrics import accuracy_score
 from confusion_matrix_graph import plot_confusion_matrix
 from sklearn.neighbors import KNeighborsClassifier
@@ -80,12 +81,24 @@ y_predict = model.predict(x_test)
 y_predict = np.round(y_predict)
 
 # Metrics
+print("Metrics for ANNs")
 cnf_matrix = confusion_matrix(y_test.argmax(axis=1), y_predict.argmax(axis=1))
 plot_confusion_matrix(cnf_matrix, classes=['0','1','2','3','4','5','6','7','8','9'],
                       title='Confusion matrix, without normalization')
-
+print("Accuracy score:")
 print(accuracy_score(y_test, y_predict))
 
+print("Precision score:")
+average_precision = average_precision_score(y_test, y_predict)
+print(average_precision)
+
+recall = recall_score(y_test, y_predict, average='micro')
+print("Recall score:")
+print(recall)
+
+fscore = fbeta_score(y_test, y_predict, beta=1, average='micro')
+print("F-score:")
+print(fscore)
 
 # K-Nearest Neighbor Classification
 neigh = KNeighborsClassifier(n_neighbors=3)
@@ -98,20 +111,31 @@ pred = neigh.predict(x_val)
 pred = np.round(pred)
 
 # Evaluate Accuracy on validation set
-print("Accuracy Validation")
+print("Metrics for KNNs")
+print("Accuracy on validation set:")
 print(accuracy_score(y_val, pred))
 
 # Predict the response on test set
 predTest = neigh.predict(x_test)
 predTest = np.round(predTest)
 
-# Evaluate Accuracy on test set
-print("Accuracy Test")
-print(accuracy_score(y_test, predTest))
-
 # Confusion matrix and other metrics
 print("Confusion matrix")
 cnf_matrix_KN = confusion_matrix(y_test.argmax(axis=1), predTest.argmax(axis=1))
 plot_confusion_matrix(cnf_matrix_KN, classes=['0','1','2','3','4','5','6','7','8','9'],
                       title='Confusion matrix, without normalization')
+print("Accuracy on test set:")
+print(accuracy_score(y_test, predTest))
+
+print("Precision score:")
+average_precision_knn = average_precision_score(y_test, predTest)
+print(average_precision_knn)
+
+recall_knn = recall_score(y_test, predTest, average='micro')
+print("Recall score:")
+print(recall_knn)
+
+fscore_knn = fbeta_score(y_test, predTest, beta=1, average='micro')
+print("F-score:")
+print(fscore_knn)
 
