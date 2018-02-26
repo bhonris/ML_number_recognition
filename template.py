@@ -33,13 +33,13 @@ for train_index, validate_index in testSetSampler.split(x_, y_):
 model = Sequential() # declare model
 model.add(Dense(60, input_shape=(28*28, ), kernel_initializer=initializers.glorot_uniform(40)))  # first layer
 model.add(Activation('relu'))
-
+#
 model.add(Dense(60, activation='selu', kernel_initializer=initializers.lecun_normal()))
 model.add(Dense(60, activation='tanh', use_bias=True, kernel_initializer=initializers.glorot_uniform(40), bias_initializer='zeros'))
 model.add(Dense(60, activation='tanh', use_bias=True, kernel_initializer=initializers.glorot_uniform(40), bias_initializer='zeros'))
 model.add(Dense(60, activation='relu', use_bias=True, kernel_initializer=initializers.glorot_uniform(40), bias_initializer='zeros'))
 model.add(Dense(60, activation='selu', kernel_initializer=initializers.lecun_normal()))
-
+#
 model.add(Dense(10, kernel_initializer='he_normal')) # last layer
 model.add(Activation('softmax'))
 
@@ -52,7 +52,7 @@ model.compile(optimizer='sgd',
 history = model.fit(x_train, y_train,
                     validation_data = (x_val, y_val), 
                     epochs=1400,
-                    batch_size=512)
+                    batch_size=10)
 
 # Report Results
 print(history.history)
