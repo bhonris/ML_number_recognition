@@ -4,7 +4,7 @@ from keras.utils import to_categorical
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
-#from confusion_matrix_graph import plot_confusion_matrix
+from confusion_matrix_graph import plot_confusion_matrix
 import numpy as np
 import sklearn.model_selection as modelsel
 from sklearn import svm, datasets
@@ -207,7 +207,7 @@ def engineeredTree(x,y):
 
 # Model Template
 def baseLineModel(xTrain,yTrain,xVal, yVal,  score = 'accuracy', max_depth = None):
-    clf = tree.DecisionTreeClassifier(max_depth = max_depth) #max depth
+    clf = tree.DecisionTreeClassifier() #max depth
     a = (clf.fit(xTrain,yTrain))
     #b = a.tree_
     #print("Node Count: " + str(b.node_count))

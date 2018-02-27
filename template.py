@@ -41,7 +41,6 @@ model.add(Dense(60, activation='relu', use_bias=True, bias_initializer='zeros'))
 model.add(Dense(60, activation='selu'))
 model.add(Dense(60, activation='tanh', use_bias=True, bias_initializer='zeros'))
 
-
 model.add(Dense(10, kernel_initializer='he_normal')) # last layer
 model.add(Activation('softmax'))
 
@@ -54,7 +53,7 @@ model.compile(optimizer='sgd',
 history = model.fit(x_train, y_train,
                     validation_data = (x_val, y_val),
                     epochs=1400,
-                    batch_size=512)
+                    batch_size=10)
 
 
 # Report Results
