@@ -28,8 +28,8 @@ for x_index, test_index in testSetSampler.split(x, y):
 
 validateSetSampler = StratifiedShuffleSplit(n_splits=10, test_size=0.2, train_size=0.8)
 for train_index, validate_index in testSetSampler.split(x_, y_):
-    x_train, x_val = x[train_index], x[validate_index]
-    y_train, y_val = y[train_index], y[validate_index]
+    x_train, x_val = x_[train_index], x_[validate_index]
+    y_train, y_val = y_[train_index], y_[validate_index]
 #def engineeredTree(matrix_number):
 
 def showImage(x):
@@ -331,8 +331,8 @@ def doEvaluation(xTrain, yTrain, xTest, yTest, criterion='gini', splitter = 'bes
     b = clf.tree_
     with open("cTree.txt", "w") as f:
         f = tree.export_graphviz(clf, out_file=f)
-    fullEvaluation(clf, xTrain, yTrain, yTest, y_predict, title)
-    return y_predict
+    return fullEvaluation(clf, xTrain, yTrain, yTest, y_predict, title)
+    
 
 ###############################################################################
 def fullEvaluation(clf, xTrain, yTrain, y_test, predTest, title):
@@ -353,9 +353,9 @@ def fullEvaluation(clf, xTrain, yTrain, y_test, predTest, title):
 #    print(acc_score_xval)
     
     print("Precision score:")
-    print(predTest)
-#    average_precision_knn = average_precision_score(y_test, predTest)
-#    normalScore += [average_precision_knn]
+ #   print(predTest)
+    average_precision_knn = average_precision_score(y_test, predTest)
+    normalScore += [average_precision_knn]
 #    print(average_precision_knn)
 #    average_precision_knn_xval = modelsel.cross_val_score(clf, xTrain, yTrain, cv=10, scoring = 'precision').mean()
 #    crossValScore += [average_precision_knn_xval]
@@ -378,9 +378,9 @@ def fullEvaluation(clf, xTrain, yTrain, y_test, predTest, title):
 #    crossValScore += [fscore_knn_xval]
 #    print(fscore_knn_xval)
 
-    cnf_matrix = confusion_matrix(y_test, predTest)
-    plot_confusion_matrix(cnf_matrix, classes=['0','1','2','3','4','5','6','7','8','9'],
-                      title=title)
+   # cnf_matrix = confusion_matrix(y_test, predTest)
+    #plot_confusion_matrix(cnf_matrix, classes=['0','1','2','3','4','5','6','7','8','9'],
+     #                 title=title)
     return normalScore
 #Feature Extraction Trees
 ###############################################################################
@@ -419,82 +419,82 @@ def featureExtraction(x_val,y_val):
     return df
 
 ###############################################################################
-#normalDF = pd.DataFrame(columns = ['accuracy', 'precision', 'recall', 'f-score'])
+normalDF = pd.DataFrame(columns = ['accuracy', 'precision', 'recall', 'f-score'])
 #crossValDF = pd.DataFrame(columns = ['accuracy', 'precision', 'recall', 'f-score'])
-#
-#print("Default Tree")
-#x = doEvaluation(x_train, y_train, title = "Default Tree")
-#normalDF.loc[0] = x
-#
-#print("Entropy")
-#y_predict = doEvaluation(x_train, y_train, x_test, y_test, criterion = 'entropy', title = "Using Entropy")
-#normalDF.loc[1] = x
-##crossValDF.loc[1]= y
-#
-#print("Max Depth: 8")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', max_depth = 8, title = "Max Depth 8 ")
-#normalDF.loc[2] = x
-##crossValDF.loc[2]= y
-#
-#print("Max Depth: 10")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', max_depth = 10, title = "Max Depth 10")
-#normalDF.loc[3] = x
-##crossValDF.loc[3]= y
-#
-#print("Max Depth: 15")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', max_depth = 15, title = "Max Depth 15")
-#normalDF.loc[4] = x
-##crossValDF.loc[4]= y
-#
-#print("Max Features: auto")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', max_features="auto", title = "Max Features auto")
-#normalDF.loc[5] = x
-#
-#print("Max Features: log2")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', max_features="log2", title = "Max Features log2")
-#normalDF.loc[6] = x
-#
-#print("Max Features: sqrt")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', max_features="sqrt", title = "Max Features sqrt")
-#normalDF.loc[7] = x
-#
-#print("Max Leaf Nodes: 100")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', max_leaf_nodes=100, title = "Max Leaf Nodes 100")
-#normalDF.loc[8] = x
-#
-#print("Max Leaf Nodes: 200")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', max_leaf_nodes=100, title = "Max Leaf Nodes 200")
-#normalDF.loc[9] = x
-#
-#print("Max Leaf Nodes: 300")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', max_leaf_nodes=100, title = "Max Leaf Nodes 300")
-#normalDF.loc[10] = x
-#
-#print("Max Leaf Nodes: 400")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', max_leaf_nodes=100, title = "Max Leaf Nodes 400")
-#normalDF.loc[11] = x
-#
-#print("Min Impurity Decrease:  0.00003")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', min_impurity_decrease=0.00003, title = "Min Impurity Decrease 0.00003")
-#normalDF.loc[12] = x
-#
-#print("Min Impurity Decrease:  0.00010")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', min_impurity_decrease=0.00010, title = "Min Impurity Decrease 0.00010")
-#normalDF.loc[13] = x
-#
-#print("Min Impurity Decrease:  0.00030")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', min_impurity_decrease=0.00030, title = "Min Impurity Decrease 0.00030")
-#normalDF.loc[14] = x
-#
-#print("PreSort: True")
-#x = doEvaluation(x_train, y_train, criterion = 'entropy', presort= True, title = "Presort")
-#normalDF.loc[15] = x
-#normalDF.index = ["Default Tree", "Entropy", 
-#                  "Max Depth: 8", "Max Depth: 10", "Max Depth: 15", 
-#                  "Max Features: auto", "Max Features: log2", "Max Features: sqrt",
-#                  "Max Leaf Nodes: 100", "Max Leaf Nodes: 200", "Max Leaf Nodes: 300", "Max Leaf Nodes: 400",
-#                  "Min Impurity Decrease:  0.00003", "Min Impurity Decrease:  0.0001", "Min Impurity Decrease:  0.0003",
-#                  "Presort"]
+
+print("Default Tree")
+x = doEvaluation(x_train, y_train, x_test, y_test, title = "Default Tree")
+normalDF.loc[0] = x
+
+print("Entropy")
+y_predict = doEvaluation(x_train, y_train, x_test, y_test, criterion = 'entropy', title = "Using Entropy")
+normalDF.loc[1] = x
+#crossValDF.loc[1]= y
+
+print("Max Depth: 8")
+x = doEvaluation(x_train, y_train,x_test, y_test, criterion = 'entropy', max_depth = 8, title = "Max Depth 8 ")
+normalDF.loc[2] = x
+#crossValDF.loc[2]= y
+
+print("Max Depth: 10")
+x = doEvaluation(x_train, y_train, x_test, y_test,criterion = 'entropy', max_depth = 10, title = "Max Depth 10")
+normalDF.loc[3] = x
+#crossValDF.loc[3]= y
+
+print("Max Depth: 15")
+x = doEvaluation(x_train, y_train, x_test, y_test, criterion = 'entropy', max_depth = 15, title = "Max Depth 15")
+normalDF.loc[4] = x
+#crossValDF.loc[4]= y
+
+print("Max Features: auto")
+x = doEvaluation(x_train, y_train, x_test, y_test,criterion = 'entropy', max_features="auto", title = "Max Features auto")
+normalDF.loc[5] = x
+
+print("Max Features: log2")
+x = doEvaluation(x_train, y_train, x_test, y_test,criterion = 'entropy', max_features="log2", title = "Max Features log2")
+normalDF.loc[6] = x
+
+print("Max Features: sqrt")
+x = doEvaluation(x_train, y_train, x_test, y_test,criterion = 'entropy', max_features="sqrt", title = "Max Features sqrt")
+normalDF.loc[7] = x
+
+print("Max Leaf Nodes: 100")
+x = doEvaluation(x_train, y_train, x_test, y_test,criterion = 'entropy', max_leaf_nodes=100, title = "Max Leaf Nodes 100")
+normalDF.loc[8] = x
+
+print("Max Leaf Nodes: 200")
+x = doEvaluation(x_train, y_train,x_test, y_test,criterion = 'entropy', max_leaf_nodes=100, title = "Max Leaf Nodes 200")
+normalDF.loc[9] = x
+
+print("Max Leaf Nodes: 300")
+x = doEvaluation(x_train, y_train, x_test, y_test,criterion = 'entropy', max_leaf_nodes=100, title = "Max Leaf Nodes 300")
+normalDF.loc[10] = x
+
+print("Max Leaf Nodes: 400")
+x = doEvaluation(x_train, y_train, x_test, y_test,criterion = 'entropy', max_leaf_nodes=100, title = "Max Leaf Nodes 400")
+normalDF.loc[11] = x
+
+print("Min Impurity Decrease:  0.00003")
+x = doEvaluation(x_train, y_train, x_test, y_test,criterion = 'entropy', min_impurity_decrease=0.00003, title = "Min Impurity Decrease 0.00003")
+normalDF.loc[12] = x
+
+print("Min Impurity Decrease:  0.00010")
+x = doEvaluation(x_train, y_train, x_test, y_test,criterion = 'entropy', min_impurity_decrease=0.00010, title = "Min Impurity Decrease 0.00010")
+normalDF.loc[13] = x
+
+print("Min Impurity Decrease:  0.00030")
+x = doEvaluation(x_train, y_train, x_test, y_test,criterion = 'entropy', min_impurity_decrease=0.00030, title = "Min Impurity Decrease 0.00030")
+normalDF.loc[14] = x
+
+print("PreSort: True")
+x = doEvaluation(x_train, y_train, x_test, y_test,criterion = 'entropy', presort= True, title = "Presort")
+normalDF.loc[15] = x
+normalDF.index = ["Default Tree", "Entropy", 
+                  "Max Depth: 8", "Max Depth: 10", "Max Depth: 15", 
+                  "Max Features: auto", "Max Features: log2", "Max Features: sqrt",
+                  "Max Leaf Nodes: 100", "Max Leaf Nodes: 200", "Max Leaf Nodes: 300", "Max Leaf Nodes: 400",
+                  "Min Impurity Decrease:  0.00003", "Min Impurity Decrease:  0.0001", "Min Impurity Decrease:  0.0003",
+                  "Presort"]
 
 
 ###############################################################################
@@ -541,21 +541,21 @@ plot_confusion_matrix(cnf_matrix, classes=['0','1','2','3','4','5','6','7','8','
 #print(accuracy)
 
 # Stratified Sampling
-testSetSampler = StratifiedShuffleSplit(n_splits=10, test_size=0.25, train_size=0.75)
-for x_index, test_index in testSetSampler.split(x_raw, y_raw):
-    x_, x_test = x_raw[x_index], x_raw[test_index]
-    y_, y_test = y_raw[x_index], y_raw[test_index]
-
-validateSetSampler = StratifiedShuffleSplit(n_splits=10, test_size=0.2, train_size=0.8)
-for train_index, validate_index in testSetSampler.split(x_, y_):
-    x_train, x_val = x_[train_index], x_[validate_index]
-    y_train, y_val = y_[train_index], y_[validate_index]
-
-df_train    = featureExtraction(x_train, y_train)
-df_validate = featureExtraction(x_val  , y_val)
-df_test     = featureExtraction(x_test , y_test)
-
-y_predict = doEvaluation(df_train,y_train, df_test, y_test, criterion = 'entropy')
+#testSetSampler = StratifiedShuffleSplit(n_splits=10, test_size=0.25, train_size=0.75)
+#for x_index, test_index in testSetSampler.split(x_raw, y_raw):
+#    x_, x_test = x_raw[x_index], x_raw[test_index]
+#    y_, y_test = y_raw[x_index], y_raw[test_index]
+#
+#validateSetSampler = StratifiedShuffleSplit(n_splits=10, test_size=0.2, train_size=0.8)
+#for train_index, validate_index in testSetSampler.split(x_, y_):
+#    x_train, x_val = x_[train_index], x_[validate_index]
+#    y_train, y_val = y_[train_index], y_[validate_index]
+#
+#df_train    = featureExtraction(x_train, y_train)
+#df_validate = featureExtraction(x_val  , y_val)
+#df_test     = featureExtraction(x_test , y_test)
+#
+#y_predict = doEvaluation(df_train,y_train, df_test, y_test, criterion = 'entropy')
 #errorList = []
 #for e in range(len(y_predict)):
 #    if(y_predict[e] !=  y_test[e]):
