@@ -1,4 +1,3 @@
-import recall as recall
 from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras.utils import to_categorical
