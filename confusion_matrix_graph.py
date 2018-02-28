@@ -22,5 +22,6 @@ def plot_confusion_matrix(cMat, classes,
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
-    plt.savefig(title + '.png')
-    plt.gcf().clear()
+
+    plt.show()
+
