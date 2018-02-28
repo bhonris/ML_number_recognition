@@ -30,7 +30,7 @@ validateSetSampler = StratifiedShuffleSplit(n_splits=10, test_size=0.2, train_si
 for train_index, validate_index in testSetSampler.split(x_, y_):
     x_train, x_val = x[train_index], x[validate_index]
     y_train, y_val = y[train_index], y[validate_index]
-#def engineeredTree(matrix_number):
+
 
 def showImage(x):
     """Plots an image of the given array
@@ -84,6 +84,7 @@ def detectCircles(x):
     bot_x, bot_y = np.argwhere(x_bottom>50).sum(0)/len(np.argwhere(x_bottom>50))
 
     return (top_y, top_x), (bot_y, bot_x)
+
     #Split the image
     #Find centroid
 def checkForEdges(x, i, j, dx, dy, threshold):
