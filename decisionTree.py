@@ -549,8 +549,8 @@ for x_index, test_index in testSetSampler.split(x_raw, y_raw):
 
 validateSetSampler = StratifiedShuffleSplit(n_splits=10, test_size=0.2, train_size=0.8)
 for train_index, validate_index in testSetSampler.split(x_, y_):
-    x_train, x_val = x_[train_index], x_[validate_index]
-    y_train, y_val = y_[train_index], y_[validate_index]
+    x_train, x_val = x[train_index], x[validate_index]
+    y_train, y_val = y[train_index], y[validate_index]
 
 df_train    = featureExtraction(x_train, y_train)
 df_validate = featureExtraction(x_val  , y_val)
